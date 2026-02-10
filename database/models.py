@@ -263,3 +263,36 @@ class GeneratedReport(Base):
     generated_by = Column(String(100))
     generated_at = Column(DateTime, default=datetime.now)
     status = Column(String(50), default='generated')
+    
+class ConsolidatedData(Base):
+    """Модель для хранения сводных данных по компаниям"""
+    __tablename__ = 'consolidated_data'
+    
+    id = Column(Integer, primary_key=True)
+    company_id = Column(Integer, ForeignKey('companies.id'))
+    report_date = Column(Date, nullable=False)
+    
+    # Сводные показатели
+    total_azs_count = Column(Integer)  # Всего АЗС
+    total_working_azs = Column(Integer)  # Работающих АЗС
+    total_oil_depots = Column(Integer)  # Нефтебаз
+    
+    # Остатки
+    total_stock_ai92 = Column(Float)
+    total_stock_ai95 = Column(Float)
+    total_stock_diesel = Column(Float)
+    
+    # Реализация (месячная)
+    total_monthly_ai92 = Column(Float)
+    total_monthly_ai95 = Column(Float)
+    total_monthly_diesel = Column(Float)
+    
+    # Потребность
+    yearly_demand_ai92 = Column(Float)
+    yearly_demand_ai95 = Column(Float)
+    monthly_demand_ai92 = Column(Float)
+    monthly_demand_ai95 = Column(Float)
+    
+    created_at = Column(DateTime, default=datetime.now)
+    
+    company = relationship("Company")

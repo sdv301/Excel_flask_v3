@@ -3,120 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система отчетов по топливообеспечению</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Топливообеспечение - Система отчетности</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .card {
-            margin-bottom: 20px;
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
         }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+            font-weight: 600;
+            padding: 1.25rem;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
         .status-badge {
-            font-size: 0.8em;
+            font-size: 0.75em;
+            padding: 0.35em 0.65em;
+        }
+
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+
+        .upload-area:hover {
+            border-color: var(--secondary);
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--success);
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .company-card {
+            text-align: center;
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .company-card:hover {
+            background: var(--light-bg);
+            transform: scale(1.05);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), #2980b9);
+            border: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #229954);
+            border: none;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .file-name {
+            font-family: 'Courier New', monospace;
+            background: var(--light-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .hover-text-primary:hover {
+            color: #0d6efd !important;
+            transition: color 0.3s ease;
+        }
+
+        /* Дополнительные стили для отступов */
+        footer {
+            margin-top: 4rem !important; /* Увеличиваем отступ сверху */
+            padding-top: 3rem !important;
+            padding-bottom: 3rem !important;
+        }
+
+        /* Гарантируем, что основной контент имеет достаточный отступ снизу */
+        .container.py-5 {
+            padding-bottom: 4rem !important;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1 class="mb-4">📊 Система отчетов по топливообеспечению</h1>
-        
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                ⛽ Топливообеспечение
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin">
+                    <i class="bi bi-gear-fill"></i> Админ-панель
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container py-5">
+        <!-- Заголовок и статистика -->
+        <div class="row mb-5 fade-in">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-5 fw-bold text-primary mb-2">
+                            Система отчетности по топливообеспечению
+                        </h1>
+                        <p class="lead text-muted">
+                            Автоматизация сбора и анализа данных нефтепродуктов
+                        </p>
+                    </div>
+                    <div class="stats-card card text-center px-3 py-2">
+                        <small class="text-light">Загружено файлов</small>
+                        <h4 class="mb-0">{{ recent_files|length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
-            <div class="col-md-4">
-                <div class="card">
+            <!-- Левая колонка - действия -->
+            <div class="col-lg-4">
+                <!-- Карточка загрузки -->
+                <div class="card fade-in">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">📤 Загрузка файла</h5>
+                        <i class="bi bi-cloud-upload-fill me-2"></i>Загрузка отчетов
                     </div>
                     <div class="card-body">
-                        <form id="uploadForm">
-                            <div class="mb-3">
-                                <label for="fileInput" class="form-label">Выберите Excel файл (.xlsx)</label>
-                                <input class="form-control" type="file" id="fileInput" accept=".xlsx" required>
-                                <div class="form-text">Файл должен иметь стандартную структуру отчетов</div>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">
-                                📎 Загрузить файл
+                        <div class="upload-area mb-3" id="uploadArea">
+                            <i class="bi bi-file-earmark-excel feature-icon text-primary"></i>
+                            <h5>Перетащите Excel файл</h5>
+                            <p class="text-muted">или выберите вручную</p>
+                            <input type="file" id="fileInput" accept=".xlsx" class="d-none">
+                            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                <i class="bi bi-folder2-open me-2"></i>Выбрать файл
                             </button>
-                        </form>
+                        </div>
+                        <div id="fileInfo" class="d-none">
+                            <p><strong>Выбран файл:</strong> <span id="fileName" class="file-name"></span></p>
+                        </div>
+                        <button id="uploadBtn" class="btn btn-success w-100" disabled>
+                            <i class="bi bi-upload me-2"></i>Загрузить отчет
+                        </button>
                         <div id="uploadStatus" class="mt-3"></div>
                     </div>
                 </div>
-                
-                <div class="card">
+
+                <!-- Карточка генерации -->
+                <div class="card fade-in" style="animation-delay: 0.1s">
                     <div class="card-header bg-success text-white">
-                        <h5 class="card-title mb-0">📄 Генерация отчета</h5>
+                        <i class="bi bi-file-earmark-bar-graph-fill me-2"></i>Генерация сводного отчета
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label for="reportDate" class="form-label">Дата отчета</label>
-                            <input type="date" class="form-control" id="reportDate" 
-                                   value="{{ now.strftime('%Y-%m-%d') }}">
-                                   <form action="/generate-report" method="GET">
-                                        <button id="generateReportBtn" class="btn btn-success w-100">
-                                            🗂️ Сформировать сводный отчет
-                                        </button>
-                                    </form>
-                        </div>
-
-                            <form action="/generate-template-fixed" method="GET">
-                                <div class="form-group">
-                                    <label for="template_report_date">Дата отчета:</label>
-                                    <input type="date" id="template_report_date" name="report_date" 
-                                        value="{{ now.strftime('%Y-%m-%d') }}" class="form-control">
-                                </div>
-                                
-                                <div class="button-group">
-                                    <button type="submit" class="btn btn-success w-100">
-                                        📊 Сгенерировать отчет по шаблону(update)
-                                    </button>
-                                </div>
-                            </form>
-                    
-                        <div id="reportStatus" class="mt-3"></div>
-                    
-                            <p>Используйте готовый шаблон Excel для генерации отчета.</p>
-                            
-                            <form action="/generate-template-report" method="GET">
-                                <div class="form-group">
-                                    <label for="template_report_date">Дата отчета:</label>
-                                    <input type="date" id="template_report_date" name="report_date" 
-                                        value="{{ now.strftime('%Y-%m-%d') }}" class="form-control">
-                                </div>
-                                
-                                <div class="button-group">
-                                    <button type="submit" class="btn btn-success w-100">
-                                        📊 Сгенерировать отчет по шаблону
-                                    </button>
-                                </div>
-                            </form>
-
-                            <div class="mt-3">
-                                <small class="text-muted">
-                                    <strong>Внимание:</strong> Убедитесь что файл шаблона "Сводный_отчет_шаблон.xlsx" 
-                                    находится в папке report_templates
-                                </small>
+                        <form id="reportForm">
+                            <div class="mb-3">
+                                <label for="reportDate" class="form-label">Дата отчета</label>
+                                <input type="date" id="reportDate" class="form-control" 
+                                       value="{{ now.strftime('%Y-%m-%d') }}">
                             </div>
-                        </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-gear-fill me-2"></i>Сформировать отчет
+                            </button>
+                        </form>
+                        <div id="reportStatus" class="mt-3"></div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-list-check"></i> Последние загруженные файлы
-                            <span class="badge bg-secondary float-end">{{ recent_files|length }}</span>
+
+            <!-- Правая колонка - данные -->
+            <div class="col-lg-8">
+                <!-- Последние файлы -->
+                <div class="card fade-in" style="animation-delay: 0.3s">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history me-2"></i>Последние загруженные файлы
                         </h5>
+                        <span class="badge bg-primary">{{ recent_files|length }}</span>
                     </div>
                     <div class="card-body">
                         {% if recent_files %}
                         <div class="table-responsive">
-                            <table class="table table-hover table-sm">
-                                <thead>
+                            <table class="table table-hover">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>№</th>
-                                        <th>Дата отчета</th>
+                                        <th>#</th>
                                         <th>Компания</th>
-                                        <th>Название файла</th>
-                                        <th>Дата загрузки</th>
+                                        <th>Дата отчета</th>
+                                        <th>Файл</th>
                                         <th>Статус</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,47 +278,52 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>
-                                            {% if file.report_date %}
-                                                {{ file.report_date.strftime('%d.%m.%Y') }}
-                                            {% else %}
-                                                <span class="text-muted">Н/Д</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
                                             <strong>{{ file.company_name }}</strong>
                                             {% if file.company_code %}
                                                 <br><small class="text-muted">{{ file.company_code }}</small>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <small class="text-monospace">{{ file.filename|truncate(30) }}</small>
-                                            {% if file.filename|length > 30 %}
-                                                <br><small class="text-muted" title="{{ file.filename }}">...{{ file.filename[-20:] }}</small>
+                                            {% if file.report_date %}
+                                                <span class="badge bg-light text-dark">
+                                                    {{ file.report_date.strftime('%d.%m.%Y') }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">Н/Д</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <small>
-                                                {% if file.upload_date %}
-                                                    {{ file.upload_date.strftime('%d.%m.%Y') }}<br>
-                                                    {{ file.upload_date.strftime('%H:%M:%S') }}
-                                                {% else %}
-                                                    <span class="text-muted">Н/Д</span>
-                                                {% endif %}
-                                            </small>
+                                            <span class="file-name" title="{{ file.filename }}">
+                                                {{ file.filename|truncate(25) }}
+                                            </span>
                                         </td>
                                         <td>
                                             {% if file.status == 'processed' %}
-                                                <span class="badge bg-success status-badge" title="Данные успешно загружены">
-                                                    ✓ Обработан
+                                                <span class="badge bg-success status-badge">
+                                                    <i class="bi bi-check-circle me-1"></i>Обработан
                                                 </span>
                                             {% elif file.status == 'error' %}
-                                                <span class="badge bg-danger status-badge" title="Ошибка при обработке">
-                                                    ✗ Ошибка
+                                                <span class="badge bg-danger status-badge">
+                                                    <i class="bi bi-x-circle me-1"></i>Ошибка
                                                 </span>
                                             {% else %}
-                                                <span class="badge bg-warning status-badge" title="В процессе обработки">
-                                                    ⏳ {{ file.status or 'Загружен' }}
+                                                <span class="badge bg-warning status-badge">
+                                                    <i class="bi bi-clock me-1"></i>В обработке
                                                 </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if file.id is defined and file.id %}
+                                            <button class="btn btn-sm btn-outline-primary file-details-btn" 
+                                                    data-file-id="{{ file.id }}"
+                                                    title="Подробности">
+                                                <i class="bi bi-info-circle"></i>
+                                            </button>
+                                            {% else %}
+                                            <button class="btn btn-sm btn-outline-secondary" disabled
+                                                    title="ID файла недоступен">
+                                                <i class="bi bi-info-circle"></i>
+                                            </button>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -173,26 +332,33 @@
                             </table>
                         </div>
                         {% else %}
-                        <div class="alert alert-info text-center">
-                            <i class="bi bi-inbox"></i> Файлы еще не загружены
-                            <p class="mb-0 mt-2"><small>Используйте форму слева для загрузки Excel файлов</small></p>
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">Файлы не загружены</h5>
+                            <p class="text-muted">Начните с загрузки первого отчета</p>
                         </div>
                         {% endif %}
                     </div>
                 </div>
-                
-                <div class="card">
+
+                <!-- Компании -->
+                <div class="card fade-in" style="animation-delay: 0.4s">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">🏢 Компании в системе</h5>
+                        <h5 class="mb-0">
+                            <i class="bi bi-building me-2"></i>Компании в системе
+                        </h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             {% for company in companies %}
-                            <div class="col-md-4 mb-3">
-                                <div class="card h-100">
-                                    <div class="card-body text-center">
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="company-card card h-100">
+                                    <div class="card-body">
+                                        <i class="bi bi-building feature-icon text-primary"></i>
                                         <h6 class="card-title">{{ company.name }}</h6>
-                                        <small class="text-muted">{{ company.code }}</small>
+                                        {% if company.code %}
+                                            <small class="text-muted">{{ company.code }}</small>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -204,147 +370,344 @@
         </div>
     </div>
 
-    <!-- В templates/index.html исправляем JavaScript часть -->
-<script>
-    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const fileInput = document.getElementById('fileInput');
-        const statusDiv = document.getElementById('uploadStatus');
-        
-        if (!fileInput.files[0]) {
-            statusDiv.innerHTML = '<div class="alert alert-danger">Пожалуйста, выберите файл</div>';
-            return;
-        }
-        
-        statusDiv.innerHTML = '<div class="alert alert-info">⏳ Загрузка файла...</div>';
-        
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-        
-        try {
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                // ИСПРАВЛЯЕМ ЭТУ ЧАСТЬ:
-                const dataExtracted = result.data_extracted || {};
-                
-                statusDiv.innerHTML = `
-                    <div class="alert alert-success">
-                        ✅ Файл успешно загружен!
-                        <p><strong>Компания:</strong> ${result.company || 'Не указана'}</p>
-                        <p><strong>Дата отчета:</strong> ${result.report_date || 'Не указана'}</p>
-                        ${dataExtracted.sheet1 !== undefined ? `
-                        <p><strong>Извлечено данных:</strong></p>
-                        <ul class="mb-0">
-                            <li>Лист 1: ${dataExtracted.sheet1 || 0} записей</li>
-                            <li>Лист 2: ${dataExtracted.sheet2 ? 'данные есть' : 'нет данных'}</li>
-                            <li>Лист 3: ${dataExtracted.sheet3 || 0} записей</li>
-                            <li>Лист 5: ${dataExtracted.sheet5 || 0} записей</li>
-                        </ul>
-                        ` : ''}
+    <!-- Футер -->
+    <footer class="bg-dark text-light py-8 mt-8">
+        <div class="container">
+            <div class="row">
+                <!-- Лого и описание -->
+                <div class="col-lg-4 mb-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-fuel-pump fs-2 text-primary me-3"></i>
+                        <div>
+                            <h5 class="fw-bold mb-0">Топливообеспечение</h5>
+                            <small class="text-muted">Система отчетности</small>
+                        </div>
                     </div>
-                `;
-                
-                // Перезагружаем страницу через 3 секунды для обновления списка файлов
-                setTimeout(() => location.reload(), 3000);
-            } else {
-                statusDiv.innerHTML = `
-                    <div class="alert alert-danger">
-                        ❌ Ошибка: ${result.error || 'Неизвестная ошибка'}
-                        ${result.details ? '<details><summary>Подробности</summary><pre>' + result.details + '</pre></details>' : ''}
-                    </div>
-                `;
-            }
-        } catch (error) {
-            statusDiv.innerHTML = `
-                <div class="alert alert-danger">
-                    ❌ Ошибка сети: ${error.message}
+                    <p class="text-light opacity-75 small">
+                        Профессиональная система для автоматизации сбора, анализа и формирования 
+                        отчетности по нефтепродуктам. Повышаем эффективность управления 
+                        топливными ресурсами.
+                    </p>
                 </div>
-            `;
-        }
-        
-        fileInput.value = '';
-    });
-    
-    document.getElementById('reportForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const dateInput = document.getElementById('report_date').value;
-        
-        fetch('/generate-report', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                report_date: dateInput
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Показываем ссылку для скачивания
-                window.location.href = data.download_url;
-            } else {
-                alert('Ошибка: ' + data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Ошибка при генерации отчета');
-        });
-    });
 
-    // Также исправляем вторую функцию если нужно
-    document.getElementById('generateReportBtn').addEventListener('click', async function() {
-        const reportDate = document.getElementById('reportDate').value;
-        const statusDiv = document.getElementById('reportStatus');
-        
-        statusDiv.innerHTML = '<div class="alert alert-info">⏳ Генерация отчета...</div>';
-        
-        try {
-            const response = await fetch('/generate-report', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ report_date: reportDate })
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                statusDiv.innerHTML = `
-                    <div class="alert alert-success">
-                        ✅ Отчет успешно сгенерирован!
-                        <p><strong>Файл:</strong> ${result.filename || 'Не указан'}</p>
-                        <a href="/download-report/${result.filename || ''}" class="btn btn-sm btn-success mt-2">
-                            📥 Скачать отчет
-                        </a>
+                <!-- Быстрые ссылки -->
+                <div class="col-lg-2 mb-6">
+                    <h6 class="fw-bold text-uppercase small mb-3">Навигация</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/" class="text-light opacity-75 text-decoration-none hover-text-primary">Главная</a></li>
+                        <li class="mb-2"><a href="/admin" class="text-light opacity-75 text-decoration-none hover-text-primary">Админ-панель</a></li>
+                        <li class="mb-2"><a href="/debug-paths" class="text-light opacity-75 text-decoration-none hover-text-primary">Отладка</a></li>
+                    </ul>
+                </div>
+
+                <!-- Система -->
+                <div class="col-lg-3 mb-6">
+                    <h6 class="fw-bold text-uppercase small mb-3">Система</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="text-light opacity-75">
+                                <i class="bi bi-database me-2"></i>Файлов: {{ recent_files|length }}
+                            </span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="text-light opacity-75">
+                                <i class="bi bi-building me-2"></i>Компаний: {{ companies|length }}
+                            </span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="text-light opacity-75">
+                                <i class="bi bi-check-circle me-2"></i>Статус: <span class="text-success">Активен</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Контакты -->
+                <div class="col-lg-3 mb-6">
+                    <h6 class="fw-bold text-uppercase small mb-3">Поддержка</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="mailto:support@toplivo.ru" class="text-light opacity-75 text-decoration-none">
+                                <i class="bi bi-envelope me-2"></i>otdelzavozater@mail.ru
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <span class="text-light opacity-75">
+                                <i class="bi bi-telephone me-2"></i>+7 (4112) 50-65-09
+                            </span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="text-light opacity-75">
+                                <i class="bi bi-clock me-2"></i>24/7 Техподдержка
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Нижняя часть -->
+            <hr class="my-4 opacity-25">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <small class="text-light opacity-50">
+                        &copy; Министерство по делам гражданской обороны и обеспечению безопасности жизнедеятельности населения РС(Я). Все права защищены.
+                    </small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex gap-3 justify-content-md-end">
+                        <small class="text-light opacity-50">Версия 1.0.0</small>
+                        <small class="text-light opacity-50">•</small>
+                        <small class="text-light opacity-50">{{ now.strftime('%d.%m.%Y') }}</small>
                     </div>
-                `;
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальное окно для деталей файла -->
+    <div class="modal fade" id="fileDetailsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Детали файла</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="fileDetailsContent">
+                    <!-- Контент будет загружен через AJAX -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Обработка кнопок деталей файла
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.file-details-btn')) {
+                    const button = e.target.closest('.file-details-btn');
+                    const fileId = button.getAttribute('data-file-id');
+                    showFileDetails(fileId);
+                }
+            });
+        });
+
+        // Drag and drop функциональность
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (file.name.endsWith('.xlsx')) {
+                fileName.textContent = file.name;
+                fileInfo.classList.remove('d-none');
+                uploadBtn.disabled = false;
+                // Сохраняем файл для загрузки
+                uploadBtn.file = file;
             } else {
+                showAlert('Пожалуйста, выберите файл Excel (.xlsx)', 'danger');
+            }
+        }
+
+        // Загрузка файла
+        uploadBtn.addEventListener('click', async () => {
+            if (!uploadBtn.file) return;
+
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerHTML = `
+                <div class="alert alert-info d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                    Загрузка и обработка файла...
+                </div>
+            `;
+
+            const formData = new FormData();
+            formData.append('file', uploadBtn.file);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+               // В функции обработки генерации отчета добавьте:
+                    if (result.success) {
+                        statusDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <strong>Отчет успешно сгенерирован!</strong>
+                                <div class="mt-2">
+                                    <a href="${result.download_url}" class="btn btn-success me-2" id="downloadLink">
+                                        <i class="bi bi-download me-2"></i>Скачать отчет
+                                    </a>
+                                    <a href="/debug-paths" class="btn btn-outline-info me-2">
+                                        <i class="bi bi-bug me-2"></i>Отладка путей
+                                    </a>
+                                    <a href="/list-reports" class="btn btn-outline-secondary" target="_blank">
+                                        <i class="bi bi-list me-2"></i>Все отчеты (API)
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+
+                    
+                    // Сброс формы
+                    fileInfo.classList.add('d-none');
+                    uploadBtn.disabled = true;
+                    uploadBtn.file = null;
+                    fileInput.value = '';
+
+                    // Обновление страницы через 2 секунды
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    throw new Error(result.error || 'Неизвестная ошибка');
+                }
+            } catch (error) {
                 statusDiv.innerHTML = `
                     <div class="alert alert-danger">
-                        ❌ Ошибка: ${result.error || 'Неизвестная ошибка'}
-                        ${result.details ? '<details><summary>Подробности</summary><pre>' + result.details + '</pre></details>' : ''}
+                        <i class="bi bi-x-circle-fill me-2"></i>
+                        <strong>Ошибка:</strong> ${error.message}
                     </div>
                 `;
             }
-        } catch (error) {
+        });
+
+        // Генерация отчета
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('reportStatus');
+            const reportDate = document.getElementById('reportDate').value;
+
             statusDiv.innerHTML = `
-                <div class="alert alert-danger">
-                    ❌ Ошибка сети: ${error.message}
+                <div class="alert alert-info d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                    Генерация сводного отчета...
                 </div>
             `;
+
+            try {
+                const response = await fetch('/generate-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ report_date: reportDate })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>Отчет успешно сгенерирован!</strong>
+                            <div class="mt-2">
+                                <a href="${result.download_url}" class="btn btn-success">
+                                    <i class="bi bi-download me-2"></i>Скачать отчет
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(result.error || 'Неизвестная ошибка');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle-fill me-2"></i>
+                        <strong>Ошибка:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        // Функция показа деталей файла
+        function showFileDetails(fileId) {
+            if (!fileId || fileId === '0' || fileId === 'None') {
+                alert('ID файла недоступен');
+                return;
+            }
+            
+            // Преобразуем в число для безопасности
+            fileId = parseInt(fileId);
+            
+            if (isNaN(fileId)) {
+                alert('Некорректный ID файла');
+                return;
+            }
+            
+            // Загрузка деталей файла через AJAX
+            fetch(`/api/file-details/${fileId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Ошибка: ' + data.error);
+                        return;
+                    }
+                    
+                    document.getElementById('fileDetailsContent').innerHTML = `
+                        <p><strong>ID:</strong> ${data.id}</p>
+                        <p><strong>Файл:</strong> ${data.filename}</p>
+                        <p><strong>Компания:</strong> ${data.company_name}</p>
+                        <p><strong>Дата отчета:</strong> ${data.report_date}</p>
+                        <p><strong>Статус:</strong> ${data.status}</p>
+                        <p><strong>Дата загрузки:</strong> ${data.upload_date}</p>
+                    `;
+                    new bootstrap.Modal(document.getElementById('fileDetailsModal')).show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ошибка при загрузке деталей файла');
+                });
         }
-    });
-</script>
+
+        // Вспомогательные функции
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.getElementById('uploadStatus').appendChild(alert);
+        }
+
+        // Анимация появления элементов при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
 </body>
 </html>
