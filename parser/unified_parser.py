@@ -336,10 +336,14 @@ class UnifiedParser:
                 row_data['capacity_diesel_summer'] = self._get_cell_value(ws, row_num, 26)  # K
                 
                 # Добавляем только если есть значимые данные
+                significant_keys = [
+                    'stock_ai92', 'stock_ai95', 'stock_ai98_100', 'stock_diesel_winter', 'stock_diesel_arctic', 'stock_diesel_summer',
+                    'transit_ai92', 'transit_ai95', 'transit_ai98_100', 'transit_diesel_winter', 'transit_diesel_arctic', 'transit_diesel_summer'
+                ]
                 if (row_data['company'] and 
-                    any(row_data.get(key, 0) > 0 for key in ['ai92', 'ai95', 'diesel_winter', 'diesel_arctic'])):
+                    any(row_data.get(key, 0) > 0 for key in significant_keys)):
                     data.append(row_data)
-                    print(f"   📊 Найдены данные: {row_data['company']} - АИ-92: {row_data['ai92']}, АИ-95: {row_data['ai95']}")
+                    print(f"   📊 Найдены данные: {row_data['company']} - АИ-92: {row_data.get('stock_ai92', 0)}, АИ-95: {row_data.get('stock_ai95', 0)}")
             
             print(f"✅ Лист 3 обработан: {len(data)} записей")
             return data

@@ -125,24 +125,26 @@ class TemplateReportGenerator:
         start_row = 9
         current_row = start_row
         for company_name, company_data in aggregated_data.items():
-            for loc in company_data.get('sheet3_data', []):
+            sheet3_recs = company_data.get('sheet3_data', [])
+            print(f"DEBUG: Filling Sheet 3 for {company_name}, records: {len(sheet3_recs)}")
+            for loc in sheet3_recs:
                 self._set_cell_value(ws, current_row, 2, company_name)
                 self._set_cell_value(ws, current_row, 3, loc.get('location_name', ''))
-                # Stocks
+                # Stocks (Columns 4-11: 76, 92, 95, 98, Winter, Arctic, Summer, Intermediate)
                 self._set_cell_value(ws, current_row, 5, loc.get('stock_ai92', 0))
                 self._set_cell_value(ws, current_row, 6, loc.get('stock_ai95', 0))
                 self._set_cell_value(ws, current_row, 7, loc.get('stock_ai98_ai100', 0))
                 self._set_cell_value(ws, current_row, 8, loc.get('stock_diesel_winter', 0))
                 self._set_cell_value(ws, current_row, 9, loc.get('stock_diesel_arctic', 0))
                 self._set_cell_value(ws, current_row, 10, loc.get('stock_diesel_summer', 0))
-                # Transit
+                # Transit (Columns 12-19)
                 self._set_cell_value(ws, current_row, 13, loc.get('transit_ai92', 0))
                 self._set_cell_value(ws, current_row, 14, loc.get('transit_ai95', 0))
                 self._set_cell_value(ws, current_row, 15, loc.get('transit_ai98_ai100', 0))
                 self._set_cell_value(ws, current_row, 16, loc.get('transit_diesel_winter', 0))
                 self._set_cell_value(ws, current_row, 17, loc.get('transit_diesel_arctic', 0))
                 self._set_cell_value(ws, current_row, 18, loc.get('transit_diesel_summer', 0))
-                # Capacity
+                # Capacity (Columns 20-27)
                 self._set_cell_value(ws, current_row, 21, loc.get('capacity_ai92', 0))
                 self._set_cell_value(ws, current_row, 22, loc.get('capacity_ai95', 0))
                 self._set_cell_value(ws, current_row, 23, loc.get('capacity_ai98_ai100', 0))
